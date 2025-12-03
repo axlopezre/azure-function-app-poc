@@ -34,20 +34,20 @@ jobs:
         terraform_wrapper: false
         
     - name: Terraform Init
-      working-directory: ./infrastructure
+      working-directory: ./src/infrastructure
       run: terraform init
 
     - name: Terraform Plan
-      working-directory: ./infrastructure
+      working-directory: ./src/infrastructure
       run: terraform plan -out=tfplan
 
     - name: Terraform Apply
-      working-directory: ./infrastructure
+      working-directory: ./src/infrastructure
       run: terraform apply -auto-approve tfplan
 
     - name: Get Terraform Outputs
       id: tf_output
-      working-directory: ./infrastructure
+      working-directory: ./src/infrastructure
       run: |
         echo "function_app_name=$(terraform output -raw function_app_name)" >> $GITHUB_OUTPUT
 
@@ -71,6 +71,7 @@ jobs:
         source .venv/bin/activate
 
     - name: Install dependencies
+      working-directory: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
