@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: './src/infrastructure'
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './src/function'
   PYTHON_VERSION: '3.11'
 
 jobs:
@@ -34,20 +34,20 @@ jobs:
         terraform_wrapper: false
         
     - name: Terraform Init
-      working-directory: ./terraform
+      working-directory: ./infrastructure
       run: terraform init
 
     - name: Terraform Plan
-      working-directory: ./terraform
+      working-directory: ./infrastructure
       run: terraform plan -out=tfplan
 
     - name: Terraform Apply
-      working-directory: ./terraform
+      working-directory: ./infrastructure
       run: terraform apply -auto-approve tfplan
 
     - name: Get Terraform Outputs
       id: tf_output
-      working-directory: ./terraform
+      working-directory: ./infrastructure
       run: |
         echo "function_app_name=$(terraform output -raw function_app_name)" >> $GITHUB_OUTPUT
 
