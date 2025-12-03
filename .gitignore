@@ -1,0 +1,102 @@
+# ====================================
+# 🌍 Terraform
+# ====================================
+**/.terraform/*
+.terraform/
+*.tfstate
+*.tfstate.*
+*.backup
+*.log
+crash.log
+crash.*.log
+tfplan
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+terraform.rc
+.terraform.lock.hcl
+
+# ====================================
+# 🐍 Python / Azure Function
+# ====================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# pip logs and caches
+pip-log.txt
+pip-delete-this-directory.txt
+__pypackages__/
+.pytest_cache/
+.cache/
+.eggs/
+*.egg
+*.egg-info/
+
+# VS Code
+.vscode/
+.history/
+*.code-workspace
+
+# ====================================
+# ⚙️ System & OS files
+# ====================================
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+*.iml
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ====================================
+# 🪣 Node / NPM (en caso de Azure Functions con JS runtime)
+# ====================================
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# ====================================
+# 🧾 Project-specific
+# ====================================
+# Terraform state for infra
+src/infrastructure/.terraform/
+src/infrastructure/terraform.tfstate
+src/infrastructure/terraform.tfstate.backup
+src/infrastructure/tfplan
+
+# Python function outputs
+src/my-azfunc-poc/local.settings.json
+src/my-azfunc-poc/__pycache__/
+src/my-azfunc-poc/.python_packages/
+src/my-azfunc-poc/bin/
+src/my-azfunc-poc/obj/
+
+# Deployment packages
+*.zip
+*.tar.gz
+*.egg-info/
+*.dist-info/
+
+# ====================================
+# 🧠 Secrets (por si los generas en el futuro)
+# ====================================
+*.env.local
+.env.*
+.envrc
+secrets.json
+servicePrincipal.json
