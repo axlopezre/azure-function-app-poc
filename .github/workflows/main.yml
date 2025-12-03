@@ -82,5 +82,4 @@ jobs:
         app-name: ${{ needs.terraform.outputs.function_app_name }}
         package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
         scm-do-build-during-deployment: true
-        enable-oryx-build: true
-        
+        enable-oryx-build: true   
