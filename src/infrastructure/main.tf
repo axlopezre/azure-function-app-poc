@@ -85,3 +85,8 @@ resource "azurerm_role_assignment" "storage" {
     azurerm_linux_function_app.functions
   ]
 }
+
+output "function_app_name" {
+  description = "Nombre de la Azure Function App creada"
+  value       = azurerm_linux_function_app.functions.name
+}
