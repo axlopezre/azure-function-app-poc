@@ -10,12 +10,6 @@ variable "location" {
   description = "Región de Azure."
 }
 
-variable "github_repo_path" {
-  type        = string
-  default     = "./my-azfunc-poc"
-  description = "Ruta local al código clonado de la Function."
-}
-
 variable "runtime_stack" {
   type        = string
   default     = "python"
@@ -24,7 +18,7 @@ variable "runtime_stack" {
 
 variable "python_version" {
   type        = string
-  default     = "3.10"
+  default     = "3.11"
   description = "Versión de Python para la Function."
 }
 
