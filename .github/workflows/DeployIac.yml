@@ -72,4 +72,3 @@ jobs:
           github.event_name == 'push' && 
           (github.ref == 'refs/heads/QA' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main')
         run: terraform apply -auto-approve tfplan
-        

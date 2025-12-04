@@ -96,4 +96,4 @@ resource "azurerm_linux_web_app" "frontend" {
 
 output "debug_frontend_app_name" {
   value = local.frontend_app_name
-}
+} 
