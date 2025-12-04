@@ -9,9 +9,9 @@ locals {
     "-"
   )
   # Sufijo de entorno: vacío para prod, -dev / -qa para los demás
-  env_suffix = var.environment == "prod" ? "" : "-${lower(var.environment)}"
-  function_app_name  = "${local.project_name_normalized}-func${local.env_suffix}"
-  frontend_app_name  = "${local.project_name_normalized}-frontend${local.env_suffix}"
+  env_suffix        = var.environment == "prod" ? "" : "-${lower(var.environment)}"
+  function_app_name = "${local.project_name_normalized}-func${local.env_suffix}"
+  frontend_app_name = "${local.project_name_normalized}-frontend${local.env_suffix}"
 }
 
 # Resource Group
@@ -99,4 +99,8 @@ resource "azurerm_linux_web_app" "frontend" {
     SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
     NEXT_TELEMETRY_DISABLED        = "1"
   }
+}
+
+output "debug_frontend_app_name" {
+  value = local.frontend_app_name
 }
