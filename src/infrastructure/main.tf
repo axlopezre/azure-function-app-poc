@@ -1,9 +1,9 @@
 locals {
-  rg_name          = "${var.project_name}-rg"
-  storage_name     = replace(lower("${var.project_name}stg"), "-", "")
-  env_suffix = var.environment == "prod" ? "" : "-${lower(var.environment)}"
-  backend_plan_name        = "${var.project_name}-backend-plan"
-  functionapp_name = "${var.project_name}-func${local.env_suffix}"
+  rg_name           = "${var.project_name}-rg"
+  storage_name      = replace(lower("${var.project_name}stg"), "-", "")
+  env_suffix        = var.environment == "prod" ? "" : "-${lower(var.environment)}"
+  backend_plan_name = "${var.project_name}-backend-plan"
+  functionapp_name  = "${var.project_name}-func${local.env_suffix}"
   frontend_app_name = "${var.project_name}-frontend${local.env_suffix}"
 }
 
@@ -39,7 +39,7 @@ resource "azurerm_service_plan" "plan" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  sku_name = "B1"      # Plan de consumo
+  sku_name = "B1" # Plan de consumo
   os_type  = "Linux"
 }
 
@@ -57,7 +57,7 @@ resource "azurerm_linux_function_app" "functions" {
 
   site_config {
     application_stack {
-        python_version = var.python_version
+      python_version = var.python_version
     }
   }
 
