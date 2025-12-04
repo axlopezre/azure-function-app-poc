@@ -1,0 +1,62 @@
+# .github/workflows/deploy-frontend.yml
+name: Deploy Frontend (Web App)
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - QA
+    paths:
+      - 'src/Frontend/**'
+  workflow_dispatch:
+
+env:
+  FRONTEND_APP_PACKAGE_PATH: './src/Frontend'
+  NODE_VERSION: '20'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy_frontend:
+    name: Deploy Azure Web App (Frontend)
+    runs-on: ubuntu-latest
+
+    # 👇 Igual que en backend
+    environment: >
+      ${{ github.ref == 'refs/heads/main' && 'prod' ||
+          github.ref == 'refs/heads/QA' && 'QA' ||
+          'dev' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install frontend dependencies
+        working-directory: ${{ env.FRONTEND_APP_PACKAGE_PATH }}
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: ${{ env.FRONTEND_APP_PACKAGE_PATH }}
+        run: npm run build
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          # 👇 De las variables del Environment actual
+          app-name: ${{ vars.AZURE_FRONTENDAPP_NAME }}
+          package: ${{ env.FRONTEND_APP_PACKAGE_PATH }}
