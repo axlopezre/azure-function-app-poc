@@ -100,7 +100,3 @@ resource "azurerm_linux_web_app" "frontend" {
     NEXT_TELEMETRY_DISABLED        = "1"
   }
 }
-
-output "debug_frontend_app_name" {
-  value = local.frontend_app_name
-}
