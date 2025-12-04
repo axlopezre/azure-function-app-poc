@@ -1,137 +1,61 @@
-# .github/workflows/deploy.yml
-name: Deploy Azure Function
+# .github/workflows/deploy-iac.yml
+name: Deploy IaC
 
 on:
   push:
     branches:
       - main
+      - dev
+      - QA
+    paths:
+      - 'src/infrastructure/**'
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: './src/function'
-  FRONTEND_APP_PACKAGE_PATH: './src/Frontend'
-  PYTHON_VERSION: '3.11'
-  NODE_VERSION: '20'
+  TF_VERSION: '1.6.0'
 
 jobs:
-  terraform:
-    name: 'Terraform Infrastructure'
+  terraform-deploy:
+    name: Run Terraform Deploy
+    runs-on: ubuntu-latest
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-    runs-on: ubuntu-latest
-    outputs:
-      function_app_name: ${{ steps.tf_output.outputs.function_app_name }}
-      frontend_app_name: ${{ steps.tf_output.outputs.frontend_app_name }}
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: 1.6.0
-        terraform_wrapper: false
-        
-    - name: Terraform Init
-      working-directory: ./src/infrastructure
-      run: terraform init
-
-    - name: Terraform Plan
-      working-directory: ./src/infrastructure
-      run: terraform plan -out=tfplan
-
-    - name: Terraform Apply
-      working-directory: ./src/infrastructure
-      run: terraform apply -auto-approve tfplan
-
-    - name: Get Terraform Outputs
-      id: tf_output
-      working-directory: ./src/infrastructure
-      run: |
-        echo "function_app_name=$(terraform output -raw function_app_name)" >> $GITHUB_OUTPUT
-        echo "frontend_app_name=$(terraform output -raw frontend_app_name)" >> $GITHUB_OUTPUT
-
-  deploy_backend:
-    name: 'Deploy Function App'
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-    needs: terraform
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ env.PYTHON_VERSION }}
-
-    - name: Create and activate virtual environment
-      run: |
-        python -m venv .venv
-        source .venv/bin/activate
-
-    - name: Install dependencies
-      working-directory: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-
-    - name: Login to Azure
-      uses: azure/login@v2
-      with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-    - name: Deploy to Azure Functions
-      uses: Azure/functions-action@v1
-      with:
-        app-name: ${{ needs.terraform.outputs.function_app_name }}
-        package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-        scm-do-build-during-deployment: true
-        enable-oryx-build: true 
-
-  deploy_frontend:
-    name: 'Deploy Frontend App'
-    runs-on: ubuntu-latest
-    needs: terraform
-    permissions:
-      id-token: write
-      contents: read
+    defaults:
+      run:
+        working-directory: ./src/infrastructure
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
 
-    - name: Install frontend dependencies
-      working-directory: ${{ env.FRONTEND_APP_PACKAGE_PATH }}
-      run: npm ci
+      - name: Terraform Init
+        run: terraform init
 
-    - name: Build frontend
-      working-directory: ${{ env.FRONTEND_APP_PACKAGE_PATH }}
-      run: npm run build
+      - name: Terraform Format
+        run: terraform fmt -check
 
-    - name: Login to Azure
-      uses: azure/login@v2
-      with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Terraform Validate
+        run: terraform validate
 
-    - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ needs.terraform.outputs.frontend_app_name }}
-        package: ${{ env.FRONTEND_APP_PACKAGE_PATH }}
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        if: |
+          github.event_name == 'push' && 
+          (github.ref == 'refs/heads/QA' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main')
+        run: terraform apply -auto-approve tfplan
