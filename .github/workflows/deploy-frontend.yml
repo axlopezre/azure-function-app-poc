@@ -6,7 +6,7 @@ on:
     branches:
       - main
       - dev
-      - QA
+      - qa
     paths:
       - 'src/Frontend/**'
   workflow_dispatch:
@@ -27,7 +27,7 @@ jobs:
     # 👇 Igual que en backend
     environment: >
       ${{ github.ref == 'refs/heads/main' && 'prod' ||
-          github.ref == 'refs/heads/QA' && 'QA' ||
+          github.ref == 'refs/heads/qa' && 'qa' ||
           'dev' }}
 
     steps:
