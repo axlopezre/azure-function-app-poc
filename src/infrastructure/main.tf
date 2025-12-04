@@ -71,11 +71,6 @@ resource "azurerm_linux_function_app" "functions" {
   }
 }
 
-output "function_app_name" {
-  description = "Nombre de la Azure Function App creada"
-  value       = azurerm_linux_function_app.functions.name
-}
-
 # Web App Linux para Next.js
 resource "azurerm_linux_web_app" "frontend" {
   name                = local.frontend_app_name
@@ -97,8 +92,4 @@ resource "azurerm_linux_web_app" "frontend" {
     SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
     NEXT_TELEMETRY_DISABLED        = "1"
   }
-}
-
-output "frontend_app_name" {
-  value = azurerm_linux_web_app.frontend.name
 }
