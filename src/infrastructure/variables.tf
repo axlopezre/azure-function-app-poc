@@ -1,3 +1,8 @@
+variable "environment" {
+  description = "Nombre del entorno: dev, QA o prod"
+  type        = string
+}
+
 variable "project_name" {
   type        = string
   default     = "my-azfunc-poc"
