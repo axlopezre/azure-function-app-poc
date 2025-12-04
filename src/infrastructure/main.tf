@@ -2,7 +2,6 @@ locals {
   rg_name          = "${var.project_name}-rg"
   storage_name     = replace(lower("${var.project_name}stg"), "-", "")
   backend_plan_name        = "${var.project_name}-backend-plan"
-  frontend_plan_name = "${var.project_name}-frontend-plan"  # plan del frontend
   functionapp_name = "${var.project_name}-func"
 }
 
@@ -38,7 +37,7 @@ resource "azurerm_service_plan" "plan" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  sku_name = "Y1"      # Plan de consumo
+  sku_name = "B1"      # Plan de consumo
   os_type  = "Linux"
 }
 
@@ -75,22 +74,12 @@ output "function_app_name" {
   value       = azurerm_linux_function_app.functions.name
 }
 
-# App Service Plan para el frontend (Next.js)
-resource "azurerm_service_plan" "frontend_plan" {
-  name                = local.frontend_plan_name
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  sku_name = "B1"   # o "F1" (Free), "S1", etc. según lo que te permita la subscripción
-  os_type  = "Linux"
-}
-
 # Web App Linux para Next.js
 resource "azurerm_linux_web_app" "frontend" {
   name                = var.frontend_app_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  service_plan_id     = azurerm_service_plan.frontend_plan.id
+  service_plan_id     = azurerm_service_plan.plan.id
 
   https_only = true
 
