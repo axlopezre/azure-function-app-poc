@@ -73,3 +73,30 @@ output "function_app_name" {
   description = "Nombre de la Azure Function App creada"
   value       = azurerm_linux_function_app.functions.name
 }
+
+# Web App Linux para Next.js
+resource "azurerm_linux_web_app" "frontend" {
+  name                = var.frontend_app_name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  service_plan_id     = azurerm_service_plan.plan.id
+
+  https_only = true
+
+  site_config {
+    application_stack {
+      node_version = "20-lts" # o 18-lts, según lo que uses
+    }
+  }
+
+  app_settings = {
+    # Puerto interno donde corre Next (por si sirve para integraciones)
+    WEBSITES_PORT                  = "3000"
+    SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
+    NEXT_TELEMETRY_DISABLED        = "1"
+  }
+}
+
+output "frontend_app_name" {
+  value = azurerm_linux_web_app.frontend.name
+}

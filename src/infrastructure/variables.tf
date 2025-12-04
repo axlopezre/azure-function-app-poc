@@ -31,3 +31,8 @@ variable "storage_name" {
   type    = string
   default = "stfilesmch01"
 } 
+
+variable "frontend_app_name" {
+  type    = string
+  default = "azfunc-poc-frontend"
+}
