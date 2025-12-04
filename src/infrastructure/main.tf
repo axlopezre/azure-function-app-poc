@@ -1,10 +1,17 @@
 locals {
   rg_name           = "${var.project_name}-rg"
   storage_name      = replace(lower("${var.project_name}stg"), "-", "")
-  env_suffix        = var.environment == "prod" ? "" : "-${lower(var.environment)}"
   backend_plan_name = "${var.project_name}-backend-plan"
-  functionapp_name  = "${var.project_name}-func${local.env_suffix}"
-  frontend_app_name = "${var.project_name}-frontend${local.env_suffix}"
+  # Normaliza project_name: minúsculas y solo [a-z0-9-]
+  project_name_normalized = regexreplace(
+    lower(var.project_name),
+    "[^0-9a-z-]",
+    "-"
+  )
+  # Sufijo de entorno: vacío para prod, -dev / -qa para los demás
+  env_suffix = var.environment == "prod" ? "" : "-${lower(var.environment)}"
+  function_app_name  = "${local.project_name_normalized}-func${local.env_suffix}"
+  frontend_app_name  = "${local.project_name_normalized}-frontend${local.env_suffix}"
 }
 
 # Resource Group
@@ -45,7 +52,7 @@ resource "azurerm_service_plan" "plan" {
 
 # Function App (Linux)
 resource "azurerm_linux_function_app" "functions" {
-  name                = local.functionapp_name
+  name                = local.function_app_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   service_plan_id     = azurerm_service_plan.plan.id
@@ -92,4 +99,8 @@ resource "azurerm_linux_web_app" "frontend" {
     SCM_DO_BUILD_DURING_DEPLOYMENT = "true"
     NEXT_TELEMETRY_DISABLED        = "1"
   }
+}
+
+output "debug_frontend_app_name" {
+  value = local.frontend_app_name
 }
