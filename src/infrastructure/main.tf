@@ -1,17 +1,10 @@
 locals {
   rg_name           = "${var.project_name}-rg"
   storage_name      = replace(lower("${var.project_name}stg"), "-", "")
-  backend_plan_name = "${var.project_name}-backend-plan"
-  # Normaliza project_name: minúsculas y solo [a-z0-9-]
-  project_name_normalized = regexreplace(
-    lower(var.project_name),
-    "[^0-9a-z-]",
-    "-"
-  )
-  # Sufijo de entorno: vacío para prod, -dev / -qa para los demás
   env_suffix        = var.environment == "prod" ? "" : "-${lower(var.environment)}"
-  function_app_name = "${local.project_name_normalized}-func${local.env_suffix}"
-  frontend_app_name = "${local.project_name_normalized}-frontend${local.env_suffix}"
+  backend_plan_name = "${var.project_name}-backend-plan"
+  function_app_name = "${var.project_name}-func${local.env_suffix}"
+  frontend_app_name = "${var.project_name}-frontend${local.env_suffix}"
 }
 
 # Resource Group
