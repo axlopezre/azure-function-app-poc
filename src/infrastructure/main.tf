@@ -45,5 +45,5 @@ module "Frontend" {
   location            = azurerm_resource_group.rg.location
 
   web_app_name    = local.frontend_app_name
-  service_plan_id = module.backend.service_plan_id # usa el mismo plan
+  service_plan_id = module.Backend.service_plan_id # usa el mismo plan
 }
