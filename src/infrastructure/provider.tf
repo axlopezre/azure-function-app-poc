@@ -10,6 +10,4 @@ terraform {
 
 provider "azurerm" {
   features {}
-
-  # Forzamos la suscripción explícitamente
 }
