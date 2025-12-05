@@ -61,7 +61,7 @@ jobs:
         uses: Azure/functions-action@v1
         with:
           # 👇 Viene del Environment (dev/QA/prod)
-          app-name: ${{ vars.AZURE_FUNCTIONAPP_NAME }}
+          app-name: ${{ secrets.AZURE_FUNCTIONAPP_NAME }}
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
           scm-do-build-during-deployment: true
           enable-oryx-build: true

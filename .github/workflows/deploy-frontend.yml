@@ -58,5 +58,5 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           # 👇 De las variables del Environment actual
-          app-name: ${{ vars.AZURE_FRONTENDAPP_NAME }}
+          app-name: ${{ secrets.AZURE_FRONTENDAPP_NAME }}
           package: ${{ env.FRONTEND_APP_PACKAGE_PATH }}
