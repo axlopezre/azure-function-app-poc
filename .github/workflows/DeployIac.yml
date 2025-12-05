@@ -60,12 +60,6 @@ jobs:
         with:
           terraform_version: ${{ env.TF_VERSION }}
           terraform_wrapper: false
-          
-      - name: Debug TF_STATE_KEY
-        run: |
-          echo "TF_STATE_KEY=>>${TF_STATE_KEY}<<"
-        env:
-          TF_STATE_KEY: ${{ env.TF_STATE_KEY }}
 
       - name: Terraform Init
         run: |
