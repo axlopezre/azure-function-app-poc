@@ -1,10 +1,13 @@
 locals {
-  rg_name           = "${var.project_name}-rg"
-  storage_name      = replace(lower("${var.project_name}stg"), "-", "")
-  env_suffix_full   = "-${lower(var.environment)}"
-  backend_plan_name = "${var.project_name}-backend-plan"
-  function_app_name = trimspace("${var.project_name}-func${local.env_suffix_full}")
-  frontend_app_name = trimspace("${var.project_name}-frontend${local.env_suffix_full}")
+  project_name_clean = lower(trimspace(var.project_name))
+  environment_clean  = lower(trimspace(var.environment))
+  env_suffix_full = "-${local.environment_clean}"
+  # Recursos por ambiente
+  rg_name           = "${local.project_name_clean}${local.env_suffix_full}-rg"
+  storage_name      = replace("${local.project_name_clean}${local.env_suffix_full}stg", "-", "")
+  backend_plan_name = "${local.project_name_clean}${local.env_suffix_full}-backend-plan"
+  function_app_name = "${local.project_name_clean}-func${local.env_suffix_full}"
+  frontend_app_name = "${local.project_name_clean}-frontend${local.env_suffix_full}"
 }
 
 # Resource Group
