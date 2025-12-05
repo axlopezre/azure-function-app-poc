@@ -54,16 +54,6 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Debug app name (no muestra el valor)
-        run: |
-          if [ -z "$AZURE_FRONTENDAPP_NAME" ]; then
-            echo "❌ ERROR: AZURE_FRONTENDAPP_NAME está vacío"; exit 1;
-          else
-            echo "✅ AZURE_FRONTENDAPP_NAME tiene longitud: ${#AZURE_FRONTENDAPP_NAME}"
-          fi
-        env:
-          AZURE_FRONTENDAPP_NAME: ${{ secrets.AZURE_FRONTENDAPP_NAME }}
-
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
