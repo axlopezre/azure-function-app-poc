@@ -36,7 +36,7 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
 
       TF_VAR_project_name: "my-azfunc-poc"
-      
+
       # 👇 Esto exporta TF_VAR_environment para Terraform
       TF_VAR_environment: >
         ${{ github.ref == 'refs/heads/main' && 'prod' ||
@@ -45,9 +45,9 @@ jobs:
 
       # 👇 State file por ambiente
       TF_STATE_KEY: >
-        ${{ github.ref == 'refs/heads/main' && 'prod.blob-nextract' ||
-            github.ref == 'refs/heads/qa' && 'qa.blob-nextract' ||
-            'dev.blob-nextract' }}
+        ${{ github.ref == 'refs/heads/main' && 'prod.tfstate' ||
+            github.ref == 'refs/heads/qa' && 'qa.tfstate' ||
+            'dev.tfstate' }}
 
     defaults:
       run:
