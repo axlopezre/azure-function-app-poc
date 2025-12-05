@@ -1,18 +1,10 @@
 locals {
   rg_name           = "${var.project_name}-rg"
   storage_name      = replace(lower("${var.project_name}stg"), "-", "")
-  env_suffix_full   = "-${lower(var.environment)}"
+  env_suffix_full = "-${lower(var.environment)}"
   backend_plan_name = "${var.project_name}-backend-plan"
-  function_app_name = regexreplace(
-    lower(trim("${var.project_name}-func${local.env_suffix_full}", " ")),
-    "[^0-9a-z-]",
-    "-"
-  )
-  frontend_app_name = regexreplace(
-    lower(trim("${var.project_name}-frontend${local.env_suffix_full}", " ")),
-    "[^0-9a-z-]",
-    "-"
-  )
+  function_app_name = trimspace("${var.project_name}-func${local.env_suffix_full}")
+  frontend_app_name = trimspace("${var.project_name}-frontend${local.env_suffix_full}")
 }
 
 # Resource Group
@@ -104,4 +96,4 @@ resource "azurerm_linux_web_app" "frontend" {
 
 output "debug_frontend_app_name" {
   value = local.frontend_app_name
-}
+} 
