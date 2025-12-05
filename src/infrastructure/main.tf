@@ -3,8 +3,8 @@ locals {
   storage_name      = replace(lower("${var.project_name}stg"), "-", "")
   env_suffix_full   = "-${lower(var.environment)}"
   backend_plan_name = "${var.project_name}-backend-plan"
-  function_app_name = "${var.project_name}-func${local.env_suffix_full}"
-  frontend_app_name = "${var.project_name}-frontend${local.env_suffix_full}"
+  function_app_name = trim("${var.project_name}-func${local.env_suffix_full}")
+  frontend_app_name = trim("${var.project_name}-frontend${local.env_suffix_full}")
 }
 
 # Resource Group
