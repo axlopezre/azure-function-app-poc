@@ -28,16 +28,7 @@ variable "python_version" {
 }
 
 variable "function_service_plan_name" {
-  type    = string
-  default = "plan-func-python-mch01"
-}
-
-variable "storage_name" {
-  type    = string
-  default = "stfilesmch01"
-}
-
-variable "frontend_app_name" {
-  type    = string
-  default = "azfunc-poc-frontend"
+  type        = string
+  default     = "plan-func-python-mch01"
+  description = "Nombre para Application Insights (o similar)."
 }

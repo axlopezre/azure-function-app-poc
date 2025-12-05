@@ -1,7 +1,7 @@
 output "function_app_name" {
-  value = azurerm_linux_function_app.functions.name
+  value = module.backend.function_app_name
 }
 
 output "frontend_app_name" {
-  value = azurerm_linux_web_app.frontend.name
+  value = module.frontend.frontend_app_name
 }
