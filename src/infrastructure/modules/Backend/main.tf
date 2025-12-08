@@ -55,4 +55,4 @@ resource "azurerm_linux_function_app" "functions" {
   identity {
     type = "SystemAssigned"
   }
-}
+} 
