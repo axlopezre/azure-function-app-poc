@@ -1,0 +1,65 @@
+# .github/workflows/deploy-iac.yml
+name: Deploy IaC
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - qa
+    paths:
+      - 'src/infrastructure/destroy.txt'
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  TF_VERSION: '1.6.0'
+
+jobs:
+  terraform-deploy:
+    name: Run Terraform Deploy
+    runs-on: ubuntu-latest
+
+    # 👇 Esto hace que el job use el Environment correcto de GitHub
+    environment: >
+      ${{ github.ref == 'refs/heads/main' && 'prod' ||
+          github.ref == 'refs/heads/qa' && 'qa' ||
+          'dev' }}
+
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+      # 👇 State file por ambiente
+      TF_STATE_KEY: ${{ github.ref == 'refs/heads/main' && 'prod.tfstate' ||
+                      github.ref == 'refs/heads/qa' && 'qa.tfstate' ||'dev.tfstate' }}
+
+    defaults:
+      run:
+        working-directory: ./src/infrastructure
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
+
+      - name: Terraform Init
+        run: |
+         terraform init \
+           -backend-config="resource_group_name=rg-nextract-tfstate" \
+           -backend-config="storage_account_name=sa384848670" \
+           -backend-config="container_name=blob-nextract" \
+           -backend-config="key=${TF_STATE_KEY}"
+
+      - name: Terraform Destroy
+        run: terraform destroy
