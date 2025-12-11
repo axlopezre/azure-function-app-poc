@@ -12,10 +12,10 @@ locals {
 
 # Resource Group
 resource "azurerm_resource_group" "rg" {
-  name     = local.rg_name
+  name     = "rg-prueba-${var.environment}"
   location = var.location
 }
-
+/*
 # ─────────────────────────────
 # Módulo BACKEND (Function App)
 # ─────────────────────────────
@@ -46,4 +46,4 @@ module "Frontend" {
 
   web_app_name    = local.frontend_app_name
   service_plan_id = module.Backend.service_plan_id # usa el mismo plan
-}
+}*/
