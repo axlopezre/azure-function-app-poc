@@ -12,7 +12,7 @@ locals {
 
 # Resource Group
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-prueba-${var.environment}"
+  name     = "rg-prueba"
   location = var.location
 }
 /*
