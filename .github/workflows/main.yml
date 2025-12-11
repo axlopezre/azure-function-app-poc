@@ -1,5 +1,5 @@
 # .github/workflows/deploy-iac.yml
-name: Deploy IaC
+name: Destroy IAC
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
       - dev
       - qa
     paths:
-      - 'src/infrastructure/destroy.txt'
+      - 'src/destroy.txt'
   workflow_dispatch:
 
 permissions:
