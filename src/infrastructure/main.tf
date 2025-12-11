@@ -44,6 +44,6 @@ module "Frontend" {
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
 
-  web_app_name    = local.frontend_app_name
+  web_app_name      = local.frontend_app_name
   service_plan_name = lower("sp-${local.project_name_clean}-Front-${local.environment_clean}")
 }
