@@ -8,9 +8,9 @@ variable "location" {
   description = "Región de Azure."
 }
 
-variable "service_plan_id" {
+variable "service_plan_name" {
   type        = string
-  description = "ID del App Service Plan compartido (del backend)."
+  description = "Nombre del App Service Plan del backend."
 }
 
 variable "web_app_name" {
