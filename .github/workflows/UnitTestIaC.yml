@@ -71,5 +71,5 @@ jobs:
        env:
           # Esto se convierte en var.environment dentro de Terraform
           TF_VAR_environment: ${{ env.TARGET_ENV }}
-       run: terraform plan"
+       run: terraform plan
        
