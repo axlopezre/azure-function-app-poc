@@ -1,0 +1,66 @@
+name: Terraform Unit Tests
+
+on:
+  pull_request:
+    paths:
+      - 'src/infrastructure/**'
+      - '.github/workflows/UnitTestIaC.yml'
+
+jobs:
+  terraform-test:
+    name: Run Terraform Unit Tests
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      # Definimos el entorno en función de la rama destino del PR
+      TARGET_ENV: >
+        ${{ github.base_ref == 'main' && 'prod' ||
+            github.base_ref == 'QA'   && 'QA'   ||
+            'dev' }}
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./src/infrastructure
+
+    steps:
+     - name: Checkout code
+       uses: actions/checkout@v4
+
+     - name: Setup Terraform
+       uses: hashicorp/setup-terraform@v3
+       with:
+         terraform_version: 1.13
+     - name: Setup TFLint
+       uses: terraform-linters/setup-tflint@v2
+       with:
+         tflint_version: v0.50.0
+         
+     - name: Terraform Format Check
+       run: terraform fmt -check -recursive
+       continue-on-error: false
+       
+     - name: Terraform Init
+       run: terraform init
+       
+     - name: Terraform Validate
+       run: terraform validate
+       
+     - name: Terraform Check Lint
+       run: tflint
+       continue-on-error: true
+       
+     - name: tfsec action
+       uses: aquasecurity/tfsec-action@v1.0.3
+       with:
+          soft_fail: false
+          
+     - name: Terraform Plan
+       env:
+          # Esto se convierte en var.environment dentro de Terraform
+          TF_VAR_environment: ${{ env.TARGET_ENV }}
+       run: terraform plan"
+       
