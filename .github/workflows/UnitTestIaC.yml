@@ -17,7 +17,7 @@ jobs:
       # Definimos el entorno en función de la rama destino del PR
       TARGET_ENV: >
         ${{ github.base_ref == 'main' && 'prod' ||
-            github.base_ref == 'QA'   && 'QA'   ||
+            github.base_ref == 'qa'   && 'qa'   ||
             'dev' }}
 
       # State file por ambiente
@@ -28,7 +28,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-      
+
     defaults:
       run:
         working-directory: ./src/infrastructure
