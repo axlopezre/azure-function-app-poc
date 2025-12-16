@@ -8,7 +8,7 @@ on:
       - dev
       - qa
     paths:
-      - 'src/Frontend/tsconfig.json'
+      - 'src/Frontend/**'
   workflow_dispatch:
 
 env:
