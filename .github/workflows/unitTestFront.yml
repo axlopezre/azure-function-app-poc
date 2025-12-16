@@ -1,0 +1,42 @@
+name: Run Unit Tests
+
+on:
+  pull_request:
+    paths:
+      - 'src/Frontend/**'
+      - '.github/workflows/unitTestFront.yml'
+
+jobs:
+  Unit-tests:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    defaults:
+      run:
+        working-directory: ./src/Frontend
+        
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache-dependency-path: src/Frontend/package-lock.json
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install frontend dependecies
+        run: npm ci
+
+      - name: Build Frontend
+        run: npm run build
+
+      - name: Run Test
+        run: npm test
+
+env:
+  HUSKY: 0
+ 
