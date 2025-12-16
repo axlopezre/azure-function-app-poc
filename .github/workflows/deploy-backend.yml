@@ -11,13 +11,6 @@ on:
       - 'src/function/**'
   workflow_dispatch:
 
-  #  Se dispara cuando termina DeployIaC
-  workflow_run:
-    workflows: ["DeployIaC"]   # <- el "name:" del workflow de IaC
-    types: [completed]
-    branches: [main, dev, qa]
-
-
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: './src/function'
   PYTHON_VERSION: '3.11'
@@ -26,20 +19,8 @@ permissions:
   id-token: write
   contents: read
 
-# 👇 Evita doble deploy si push y workflow_run se ejecutan casi juntos
-concurrency:
-  group: deploy-backend-${{ github.ref_name }}
-  cancel-in-progress: true
-
 jobs:
   deploy_backend:
-    # ✅ Corre si:
-    # - viene de push/workflow_dispatch (siempre), o
-    # - viene de workflow_run y DeployIaC terminó OK
-    if: >
-      github.event_name != 'workflow_run' ||
-      (github.event.workflow_run.conclusion == 'success')
-
     name: Deploy Azure Function App
     runs-on: ubuntu-latest
 
