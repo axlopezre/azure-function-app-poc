@@ -21,6 +21,10 @@ jobs:
         ${{ github.base_ref == 'main' && 'prod' ||
             github.base_ref == 'qa'   && 'qa'   ||
             'dev' }}
+      
+      # State file por ambiente
+      TF_STATE_KEY: ${{ github.ref == 'refs/heads/main' && 'prod.tfstate' ||
+                      github.ref == 'refs/heads/qa' && 'qa.tfstate' ||'dev.tfstate' }}
 
     runs-on: ubuntu-latest
     permissions:
@@ -65,7 +69,12 @@ jobs:
         continue-on-error: false
        
       - name: Terraform Init
-        run: terraform init
+        run: |
+         terraform init \
+           -backend-config="resource_group_name=rg-nextract-tfstate" \
+           -backend-config="storage_account_name=sa384848670" \
+           -backend-config="container_name=blob-nextract" \
+           -backend-config="key=${TF_STATE_KEY}"
        
       - name: Terraform Validate
         run: terraform validate
