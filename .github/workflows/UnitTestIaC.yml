@@ -1,0 +1,82 @@
+name: Terraform Unit Tests
+
+on:
+  pull_request:
+    paths:
+      - 'src/infrastructure/**'
+      - '.github/workflows/UnitTestIaC.yml'
+
+jobs:
+  terraform-test:
+    name: Run Terraform Unit Tests
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      # Definimos el entorno en función de la rama destino del PR
+      TARGET_ENV: >
+        ${{ github.base_ref == 'main' && 'prod' ||
+            github.base_ref == 'qa'   && 'qa'   ||
+            'dev' }}
+
+      # State file por ambiente
+      TF_STATE_KEY: ${{ github.ref == 'refs/heads/main' && 'prod.tfstate' ||
+                      github.ref == 'refs/heads/qa' && 'qa.tfstate' ||'dev.tfstate' }}
+
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    defaults:
+      run:
+        working-directory: ./src/infrastructure
+
+    steps:
+     - name: Checkout code
+       uses: actions/checkout@v4
+
+     - name: Setup Terraform
+       uses: hashicorp/setup-terraform@v3
+       with:
+         terraform_version: 1.13
+     - name: Setup TFLint
+       uses: terraform-linters/setup-tflint@v2
+       with:
+         tflint_version: v0.50.0
+        
+     - name: Terraform Format Check
+       run: terraform fmt -check -recursive
+       continue-on-error: false
+       
+     - name: Terraform Init
+       run: |
+         terraform init \
+           -backend-config="resource_group_name=rg-nextract-tfstate" \
+           -backend-config="storage_account_name=sa384848670" \
+           -backend-config="container_name=blob-nextract" \
+           -backend-config="key=${TF_STATE_KEY}"
+       
+     - name: Terraform Validate
+       run: terraform validate
+       
+     - name: Terraform Check Lint
+       run: tflint
+       continue-on-error: true
+       
+     - name: Trivy IaC Scan
+       uses: aquasecurity/trivy-action@master
+       with:
+         scan-type: config
+         scan-ref: .
+         severity: HIGH,CRITICAL
+       env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+     - name: Terraform Plan
+       env:
+          # Esto se convierte en var.environment dentro de Terraform
+          TF_VAR_environment: ${{ env.TARGET_ENV }}
+       run: terraform plan
+       
