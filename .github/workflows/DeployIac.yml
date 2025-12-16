@@ -82,4 +82,4 @@ jobs:
         if: |
           github.event_name == 'push' && 
           (github.ref == 'refs/heads/qa' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main')
-        run: terraform apply -auto-approve tfplan
+        run: terraform apply -auto-approve tfplan -lock-timeout=10m
