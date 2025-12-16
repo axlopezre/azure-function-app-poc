@@ -25,7 +25,10 @@ jobs:
                       github.ref == 'refs/heads/qa' && 'qa.tfstate' ||'dev.tfstate' }}
 
     runs-on: ubuntu-latest
- 
+    permissions:
+      id-token: write
+      contents: read
+      
     defaults:
       run:
         working-directory: ./src/infrastructure
@@ -62,10 +65,14 @@ jobs:
        run: tflint
        continue-on-error: true
        
-     - name: tfsec action
-       uses: aquasecurity/tfsec-action@v1.0.3
+     - name: Trivy IaC Scan
+       uses: aquasecurity/trivy-action@master
        with:
-          soft_fail: false
+         scan-type: config
+         scan-ref: .
+         severity: HIGH,CRITICAL
+       env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
      - name: Terraform Plan
        env:
