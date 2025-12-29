@@ -18,7 +18,7 @@ locals {
   function_app_name     = "${local.project_name_clean}-func${local.env_suffix_full}"
   frontend_app_name     = "${local.project_name_clean}-frontend${local.env_suffix_full}"
   servicebus_name       = "${local.project_name_clean}-sb${local.env_suffix_full}-${random_id.rg_suffix.hex}"
-  servicebus_queue_name = "invoice-processing-queue-${environment_clean}"
+  servicebus_queue_name = "invoice-processing-queue-${local.environment_clean}"
 }
 
 # Resource Group
