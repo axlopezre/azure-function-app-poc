@@ -69,7 +69,7 @@ module "Core" {
   servicebus_queue_name     = local.servicebus_queue_name
 
   communication_service_name          = "extractor-communication-resource"
-  communication_service_data_location = "UnitedStates"
+  communication_service_data_location = "United States"
 
   # opcional: tags extra
   tags = {
