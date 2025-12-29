@@ -16,7 +16,7 @@ locals {
   backend_plan_name = "${local.project_name_clean}${local.env_suffix_full}-backend-plan"
   function_app_name = "${local.project_name_clean}-func${local.env_suffix_full}"
   frontend_app_name = "${local.project_name_clean}-frontend${local.env_suffix_full}"
-  servicebus_name = "${local.project_name_clean}-sb${local.env_suffix_full}-${random_id.rg_suffix.hex}"
+  servicebus_name   = "${local.project_name_clean}-sb${local.env_suffix_full}-${random_id.rg_suffix.hex}"
 }
 
 # Resource Group
@@ -60,9 +60,9 @@ module "Frontend" {
 module "Core" {
   source = "./modules/Core"
 
-  environment              = local.env_suffix_full
-  location                 = azurerm_resource_group.rg.location
-  resource_group_name      = azurerm_resource_group.rg.name
+  environment               = local.env_suffix_full
+  location                  = azurerm_resource_group.rg.location
+  resource_group_name       = azurerm_resource_group.rg.name
   servicebus_namespace_name = local.servicebus_name
 
   # opcional: tags extra
