@@ -21,12 +21,12 @@ resource "azurerm_servicebus_namespace" "this" {
   tags = local.merged_tags
 }
 
-resource "azurerm_servicebus_queue" "invoice_processing_qa" {
+resource "azurerm_servicebus_queue" "invoice_processing" {
   name         = var.servicebus_queue_name
   namespace_id = azurerm_servicebus_namespace.this.id
 
   # Capacidad
-  max_size_in_megabytes = 81920 # 80 GB
+  max_size_in_megabytes = 5120
 
   # Mensajes
   max_delivery_count = 10
