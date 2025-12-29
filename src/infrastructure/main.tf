@@ -2,7 +2,8 @@ resource "random_id" "rg_suffix" {
   byte_length = 4 # Generates 8 hexadecimal characters
 
   keepers = {
-    rg_key = each.key # It regenerates if you change the key
+    project_name = var.project_name
+    environment  = var.environment
   }
 }
 
