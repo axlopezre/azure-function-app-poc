@@ -12,12 +12,12 @@ locals {
   environment_clean  = lower(trimspace(var.environment))
   env_suffix_full    = "-${local.environment_clean}"
   # Recursos por ambiente
-  rg_name           = "${local.project_name_clean}${local.env_suffix_full}-rg"
-  storage_name      = replace("${local.project_name_clean}${local.env_suffix_full}stg", "-", "")
-  backend_plan_name = "${local.project_name_clean}${local.env_suffix_full}-backend-plan"
-  function_app_name = "${local.project_name_clean}-func${local.env_suffix_full}"
-  frontend_app_name = "${local.project_name_clean}-frontend${local.env_suffix_full}"
-  servicebus_name   = "${local.project_name_clean}-sb${local.env_suffix_full}-${random_id.rg_suffix.hex}"
+  rg_name               = "${local.project_name_clean}${local.env_suffix_full}-rg"
+  storage_name          = replace("${local.project_name_clean}${local.env_suffix_full}stg", "-", "")
+  backend_plan_name     = "${local.project_name_clean}${local.env_suffix_full}-backend-plan"
+  function_app_name     = "${local.project_name_clean}-func${local.env_suffix_full}"
+  frontend_app_name     = "${local.project_name_clean}-frontend${local.env_suffix_full}"
+  servicebus_name       = "${local.project_name_clean}-sb${local.env_suffix_full}-${random_id.rg_suffix.hex}"
   servicebus_queue_name = "invoice-processing-queue-${environment_clean}"
 }
 
