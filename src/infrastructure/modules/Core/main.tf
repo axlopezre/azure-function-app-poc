@@ -26,7 +26,7 @@ resource "azurerm_servicebus_queue" "invoice_processing" {
   namespace_id = azurerm_servicebus_namespace.this.id
 
   # Capacidad
-  max_size_in_megabytes = 5120
+  max_size_in_megabytes = 2048
 
   # Mensajes
   max_delivery_count = 10
