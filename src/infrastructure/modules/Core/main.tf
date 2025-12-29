@@ -20,3 +20,31 @@ resource "azurerm_servicebus_namespace" "this" {
 
   tags = local.merged_tags
 }
+
+resource "azurerm_servicebus_queue" "invoice_processing_qa" {
+  name         = var.servicebus_queue_name
+  namespace_id = azurerm_servicebus_namespace.this.id
+
+  # Capacidad
+  max_size_in_megabytes = 81920 # 80 GB
+
+  # Mensajes
+  max_delivery_count = 10
+  default_message_ttl = "P1D" # 1 día
+  lock_duration       = "PT1M" # 1 minuto
+
+  # Características
+  requires_session    = true
+
+  # Dead-letter
+  dead_lettering_on_message_expiration = true
+
+  # Duplicados
+  requires_duplicate_detection = true
+  duplicate_detection_history_time_window = "PT10M"
+
+  # Auto delete
+  auto_delete_on_idle = "P10675199DT2H48M5.4775807S" # NEVER
+
+  status = "Active"
+}

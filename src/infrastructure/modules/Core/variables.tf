@@ -24,3 +24,8 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "servicebus_queue_name" {
+  description = "Name of the Service Bus Queue"
+  type        = string
+}
