@@ -13,3 +13,11 @@ output "servicebus_namespace_primary_connection_string" {
   value       = azurerm_servicebus_namespace.this.default_primary_connection_string
   sensitive   = true
 }
+
+output "communication_service_id" {
+  value = azurerm_communication_service.this.id
+}
+
+output "communication_service_name" {
+  value = azurerm_communication_service.this.name
+}

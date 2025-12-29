@@ -48,3 +48,11 @@ resource "azurerm_servicebus_queue" "invoice_processing" {
 
   status = "Active"
 }
+
+resource "azurerm_communication_service" "this" {
+  name                = var.communication_service_name
+  resource_group_name = var.resource_group_name
+  data_location       = var.communication_service_data_location
+
+  tags = local.merged_tags
+}

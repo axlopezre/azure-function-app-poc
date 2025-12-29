@@ -29,3 +29,14 @@ variable "servicebus_queue_name" {
   description = "Name of the Service Bus Queue"
   type        = string
 }
+
+variable "communication_service_name" {
+  description = "Name for Azure Communication Service resource."
+  type        = string
+}
+
+variable "communication_service_data_location" {
+  description = "Data location (e.g., UnitedStates, Europe, etc.)."
+  type        = string
+  default     = "UnitedStates"
+}
