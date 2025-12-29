@@ -1,3 +1,11 @@
+resource "random_id" "rg_suffix" {
+  byte_length = 4 # Generates 8 hexadecimal characters
+
+  keepers = {
+    rg_key = each.key # It regenerates if you change the key
+  }
+}
+
 locals {
   project_name_clean = lower(trimspace(var.project_name))
   environment_clean  = lower(trimspace(var.environment))
@@ -8,6 +16,7 @@ locals {
   backend_plan_name = "${local.project_name_clean}${local.env_suffix_full}-backend-plan"
   function_app_name = "${local.project_name_clean}-func${local.env_suffix_full}"
   frontend_app_name = "${local.project_name_clean}-frontend${local.env_suffix_full}"
+  servicebus_name = "${local.project_name_clean}-sb${local.env_suffix_full}-${random_id.rg_suffix.hex}"
 }
 
 # Resource Group
@@ -46,4 +55,18 @@ module "Frontend" {
 
   web_app_name      = local.frontend_app_name
   service_plan_name = lower("sp-${local.project_name_clean}-Front-${local.environment_clean}")
+}
+
+module "Core" {
+  source = "./modules/Core"
+
+  environment              = local.env_suffix_full
+  location                 = azurerm_resource_group.rg.location
+  resource_group_name      = azurerm_resource_group.rg.name
+  servicebus_namespace_name = local.servicebus_name
+
+  # opcional: tags extra
+  tags = {
+    project = "Nextract"
+  }
 }
