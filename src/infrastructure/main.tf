@@ -46,4 +46,4 @@ module "Frontend" {
 
   web_app_name      = local.frontend_app_name
   service_plan_name = lower("sp-${local.project_name_clean}-Front-${local.environment_clean}")
-}
+} 
