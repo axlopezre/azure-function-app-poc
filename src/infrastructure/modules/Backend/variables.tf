@@ -37,3 +37,13 @@ variable "python_version" {
   type        = string
   description = "Versión de Python para la Function."
 }
+
+variable "enable_durable" {
+  type    = bool
+  default = false
+}
+
+variable "cosmos_connection_string" {
+  type    = string
+  default = null
+}

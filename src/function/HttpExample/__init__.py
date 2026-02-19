@@ -10,7 +10,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         name = req_body.get('name')
 
     if name:
-        return func.HttpResponse(f"Hola {name}! Tu función de Azure está funcionando correctamente infra por ambiente esto es qa update 🎉")
+        return func.HttpResponse(f"Hola {name}! Tu función de Azure está funcionando correctamente infra por ambiente esto es main pa update 🎉")
     else:
         return func.HttpResponse(
              "Por favor pasa un nombre en la query string o en el body (JSON) con 'name'",

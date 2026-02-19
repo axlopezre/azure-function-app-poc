@@ -47,10 +47,23 @@ resource "azurerm_linux_function_app" "functions" {
     }
   }
 
-  app_settings = {
-    FUNCTIONS_WORKER_RUNTIME = var.runtime_stack
-    WEBSITE_RUN_FROM_PACKAGE = "1"
-  }
+    app_settings = merge(
+    {
+      "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.functions.connection_string
+      # VERSIÓN DE EXTENSIÓN (Muy importante)
+      "FUNCTIONS_EXTENSION_VERSION" = "~4"
+
+      # HABILITAR INDEXACIÓN V2 (Fundamental para que encuentre tus funciones)
+      "AzureWebJobsFeatureFlags" = "EnableWorkerIndexing"
+
+      # OPTIMIZACIÓN DE DEPENDENCIAS
+      "PYTHON_ISOLATE_WORKER_DEPENDENCIES" = "1"
+      "PYTHON_ENABLE_WORKER_EXTENSIONS"    = "1"
+    },
+    local.base_app_settings,
+    local.durable_app_settings,
+    local.cosmos_app_settings
+  )
 
   identity {
     type = "SystemAssigned"
